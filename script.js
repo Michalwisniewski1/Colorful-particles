@@ -6,13 +6,14 @@ canvas.height = window.innerHeight;
 
 
 var particles = [];
+var maxNumberOfCircles = 3000;
 
 var createCirclesDynamically = function(change) {
     change = change || { //check if is anything added/changed in function. If not - object is not changed.
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height
     }
-    if (particles.length > 1000) {
+    if (particles.length > maxNumberOfCircles) {
         particles.shift();
     }
     var red = Math.floor(Math.random() * 255);
@@ -29,17 +30,13 @@ var createCirclesDynamically = function(change) {
     }
     particles.push(object);
 }
-var moveCircles = function() {
-    particles.forEach(function(particle) {
-        particle.x += particle.xVelocity;
-        particle.y += particle.yVelocity;
-    })
+var moveCircles = function(particle) {
+    particle.x += particle.xVelocity;
+    particle.y += particle.yVelocity;
 }
 
-var fadeCircles = function() {
-    particles.forEach(function(particle) {
-        particle.radius *= 0.99;
-    });
+var fadeCircles = function(particle) {
+    particle.radius *= 0.99;
 }
 
 canvas.addEventListener('click', function(e) {
@@ -60,22 +57,24 @@ canvas.addEventListener('mousemove', function(e) {
     }
 });
 
-var draw = function() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); //draw each circle in new line
-    particles.forEach(function(particle) {
-        ctx.beginPath();
-        ctx.fillStyle = particle.color;
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        ctx.fill();
-    });
+var draw = function(particle) {
+    ctx.beginPath();
+    ctx.fillStyle = particle.color;
+    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+    ctx.fill();
 
 }
 
 var app = function() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); //draw each circle in new line
     createCirclesDynamically();
-    draw();
-    moveCircles();
-    fadeCircles();
+    particles.forEach(function(particle) {
+        draw(particle);
+        moveCircles(particle);
+        fadeCircles(particle);
+    });
+
+
     window.requestAnimationFrame(app);
 }
 app();
