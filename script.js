@@ -11,7 +11,10 @@ var maxNumberOfCircles = 3000;
 var createCirclesDynamically = function(change) {
     change = change || { //check if is anything added/changed in function. If not - object is not changed.
         x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height
+        y: Math.random() * canvas.height,
+        radius: 20,
+        xVelocity: Math.random() - 0.5,
+        yVelocity: Math.random() - 0.5
     }
     if (particles.length > maxNumberOfCircles) {
         particles.shift();
@@ -23,9 +26,9 @@ var createCirclesDynamically = function(change) {
     var object = {
         x: change.x,
         y: change.y,
-        xVelocity: Math.random() - 0.5,
-        yVelocity: Math.random() - 0.5,
-        radius: 20,
+        xVelocity: change.xVelocity,
+        yVelocity: change.yVelocity,
+        radius: change.radius,
         color: `rgba(${red}, ${green}, ${blue}, ${alpha})`
     }
     particles.push(object);
@@ -39,23 +42,19 @@ var fadeCircles = function(particle) {
     particle.radius *= 0.99;
 }
 
-canvas.addEventListener('click', function(e) {
-    for (var i = 0; i < 10; i++) {
+canvas.addEventListener('mousemove', function(e) {
+    console.log(e);
+    for (var i = 0; i < 1; i++) {
         createCirclesDynamically({
             x: e.clientX,
             y: e.clientY,
+            radius: 5,
+            xVelocity: (Math.random() - 0.5) * 10,
+            yVelocity: (Math.random() - 0.5) * 10
         });
     }
 });
 
-canvas.addEventListener('mousemove', function(e) {
-    for (var i = 0; i < 10; i++) {
-        createCirclesDynamically({
-            xVelocity: e.clientX,
-            yVelocity: e.clientY,
-        });
-    }
-});
 
 var draw = function(particle) {
     ctx.beginPath();
